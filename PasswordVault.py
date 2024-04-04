@@ -45,16 +45,60 @@ class PasswordVault:
 
 def main(page):
     page.title = "Password Vault"
-    page.vertical_alignment = ft.MainAxisAlignment.START
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     
+    def route_change(e: ft.RouteChangeEvent):
+        page.views.clear()
 
-    passwordVault = ft.Text(value="Password Vault", color="red")
+        page.views.append(
+            ft.View(
+                route = '/',
+                controls = [
+                    ft.Text(value='Password Vault', size=30),
+                    ft.ElevatedButton(text='Register', on_click=lambda _: page.go('/register')),
+                    ft.ElevatedButton(text='Login', on_click= lambda _:page.go('/login'))
+                ],
+                vertical_alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=30
+            )    
+        )
 
-    page.controls.append(passwordVault)
-    page.add(
-        ft.ElevatedButton("Register", ft.colors.BLUE_200),
-        ft.ElevatedButton("Login", ft.colors.GREEN_200)
-    )
+        if page.route == '/register':
+            page.views.append(
+                ft.View(
+                    route='/register',
+                    controls=[
+                        ft.Text(value= 'Register', size=30),
+                        ft.ElevatedButton(text='Back Home', on_click= lambda _: page.go('/'))
+                    ],
+                    vertical_alignment=ft.MainAxisAlignment.START,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    spacing=25
+                )
+            )
+        elif page.route == '/login':
+            page.views.append(
+                ft.View(
+                    route='/login',
+                    controls=[
+                        ft.Text(value= 'Login', size=30),
+                        ft.ElevatedButton(text='Back Home', on_click= lambda _: page.go('/'))
+                    ],
+                    vertical_alignment=ft.MainAxisAlignment.START,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    spacing=25
+                )
+            )
+        page.update()
+    
+    def view_pop(e: ft.ViewPopEvent):
+        page.views.pop()
+        top_view: ft.View = page.views[-1]
+        page.go(top_view.route)
+
+    page.on_route_change = route_change
+    page.on_view_pop = view_pop
+    page.go(page.route)
+
 
 ft.app(target=main)
