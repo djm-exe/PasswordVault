@@ -12,7 +12,7 @@ class PasswordVault:
         cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                        user TEXT,
-                       password TEXT''')
+                       password TEXT)''')
         cursor.execute('''CREATE TABLE IF NOT EXISTS passwords (
                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                        user_id INTEGER,
@@ -41,13 +41,16 @@ class PasswordVault:
             return True
         else:
             return False
-            
+                
 
 def main(page):
     page.title = "Password Vault"
     
     def route_change(e: ft.RouteChangeEvent):
         page.views.clear()
+
+        reg_username = ft.TextField(label='Enter your desired username', text_align=ft.TextAlign.LEFT, width=200)
+        reg_password = ft.TextField(label='Enter your desired password', text_align=ft.TextAlign.LEFT, width=200)
 
         page.views.append(
             ft.View(
@@ -69,6 +72,8 @@ def main(page):
                     route='/register',
                     controls=[
                         ft.Text(value= 'Register', size=30),
+                        reg_username,
+                        reg_password,
                         ft.ElevatedButton(text='Back Home', on_click= lambda _: page.go('/'))
                     ],
                     vertical_alignment=ft.MainAxisAlignment.START,
