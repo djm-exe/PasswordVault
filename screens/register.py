@@ -3,4 +3,9 @@ import flet as ft
 class RegisterScreen(ft.Container):
     def __init__(self, page:ft.Page):
         super().__init__()
-        self.content=ft.Text("Register Screen")
+        self.content=ft.Column(
+            controls=[
+                ft.Text("Register Screen"),
+                ft.ElevatedButton(text='Go Back', on_click= lambda _: page.go('/'))
+            ]
+        )
