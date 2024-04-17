@@ -8,7 +8,7 @@ class PasswordVault():
         self.c = self.conn.cursor()
         self.c.execute('''CREATE TABLE IF NOT EXISTS users(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT PRIMARY KEY,
+            username TEXT UNIQUE,
             password BLOB,
             salt BLOB
         )''')
@@ -30,14 +30,11 @@ class PasswordVault():
     def reg_user(self, username, password):
         salt = os.urandom(16)
         key = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
-        try:
-            self.c.execute('''INSERT INTO users (
+        self.c.execute('''INSERT INTO users (
             username,
             password,
             salt
-            ) VALUES (?, ?, ?)''', (username, key, salt))
-        except sqlite3.IntegrityError as err:
-            return print(f"{err}")
+        ) VALUES (?, ?, ?)''', (username, key, salt))
         self.conn.commit()
 
     def login_user(self, username, password):
