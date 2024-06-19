@@ -4,7 +4,7 @@ import os
 
 class PasswordVault():
     def __init__(self, master_password):
-        self.conn = sqlite3.connect('PV.db')
+        self.conn = sqlite3.connect('PV.db', check_same_thread=False)
         self.c = self.conn.cursor()
         self.c.execute('''CREATE TABLE IF NOT EXISTS users(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,6 +28,10 @@ class PasswordVault():
         return encrypted_password.decode()
 
     def reg_user(self, username, password):
+        if self.check_user_exist(username):
+            return False
+
+
         salt = os.urandom(16)
         key = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
         self.c.execute('''INSERT INTO users (
@@ -36,9 +40,15 @@ class PasswordVault():
             salt
         ) VALUES (?, ?, ?)''', (username, key, salt))
         self.conn.commit()
+        
+        #return True
+
+    def check_user_exist(self, username):
+        self.c.execute("SELECT username FROM users WHERE username=?", (username))
+        return bool(self.c.fetchone())
 
     def login_user(self, username, password):
-        self.c.execute('''SELECT password, salt FROM users WHERE username=?''', (username))
+        self.c.execute('''SELECT password, salt FROM users WHERE username=?''', (username,))
         result = self.c.fetchone()
         if result:
             stored_password, salt = result

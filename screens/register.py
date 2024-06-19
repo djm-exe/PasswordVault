@@ -6,7 +6,7 @@ class RegisterScreen(ft.Container):
         super().__init__()
 
         def create_vault(vault):
-            vault = PasswordVault(password.value)
+            vault = PasswordVault('master_password')
             vault.reg_user(username.value, password.value)
             page.go('/login')
             
