@@ -32,7 +32,7 @@ class PasswordVault():
             return False
 
 
-        salt = os.urandom(16)
+        salt = os.urandom(32)
         key = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
         self.c.execute('''INSERT INTO users (
             username,
