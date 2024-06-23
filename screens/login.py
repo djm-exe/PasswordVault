@@ -10,7 +10,7 @@ class LoginScreen(ft.Container):
         self.error_text = ft.Text(visible=False, color='red')
 
         self.username = ft.TextField(label='Username', width= 150)
-        self.password = ft.TextField(label='Password', width= 150)
+        self.password = ft.TextField(label='Password', width= 150, password=True)
         self.content=ft.Column(
             controls=[
                 ft.Text("Login Screen"),
